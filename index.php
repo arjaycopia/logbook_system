@@ -1,33 +1,39 @@
 <?php
 
-        $db = mysqli_connect('localhost', 'root', '', 'database');
+        // Connection
+        $db = mysqli_connect('localhost', 'root', '', 'db1');
         $data = mysqli_query($db, "SELECT * FROM logbook");
         $datas = mysqli_query($db, "SELECT * FROM logbook");
 
+        // ADD
         if (isset($_POST['add'])) {
             $name = $_POST['name'];
             $date = $_POST['date'];
             $time = $_POST['time'];
             $temp = $_POST['temp'];
+            $num = $_POST['num'];
+            $address = $_POST['address'];
             
-            mysqli_query($db, "INSERT INTO logbook (name, date, time, temp) VALUES ('$name', '$date', '$time', '$temp')");
+            mysqli_query($db, "INSERT INTO logbook (name, date, time, temp, num, address) VALUES ('$name', '$date', '$time', '$temp', '$num', '$address')");
             header('location: index.php');
         }
 
 
+        // EDIT
         if (isset($_POST['update'])) {
             $id = $_POST['id'];
             $name = $_POST['name'];
             $date = $_POST['date'];
             $time = $_POST['time'];
             $temp = $_POST['temp'];
-            
+            $num = $_POST['num'];
+            $address = $_POST['address']; 
 
-            mysqli_query($db, "UPDATE logbook SET name='$name', date='$date', time='$time', temp='$temp' WHERE id=$id");
+            mysqli_query($db, "UPDATE logbook SET name='$name', date='$date', time='$time', temp='$temp', num= '$num', address='$address'  WHERE id=$id");
             header('location: index.php');
         }
 
-         // delete
+         // DELETE
         if (isset($_GET['del'])) {
             $id = $_GET['del'];
             mysqli_query($db, "DELETE FROM logbook WHERE id=$id");
@@ -64,7 +70,7 @@
 <body class="bg-gray-50">
     <div class="flex h-screen items-center justify-center">
                <div class="bg-white rounded-lg p-6 shadow-sm" style="width:50%;">
-                <span class="text-lg uppercase"> Simple Logbook System</span> 
+                <span class="text-lg uppercase"> Logbook</span> 
                 <div class="flex justify-between pb-5">
                     <h1 class="font-medium text-gray-700">List of Records</h1>
                     <div>
@@ -87,6 +93,12 @@
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Temperature
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                           Contact Number
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Address
                         </th>
                         <th scope="col" class="relative px-3 py-3">
                             <span class="sr-only">Edit</span>
@@ -116,6 +128,16 @@
                                     <small><?php echo $row['temp']?></small>
                                 </div>
                             </td>
+                            <td class="px-3 py-2 whitespace-nowrap">
+                                <div class="ml-4">
+                                    <small><?php echo $row['num']?></small>
+                                </div>
+                            </td>
+                            <td class="px-3 py-2 whitespace-nowrap">
+                                <div class="ml-4">
+                                    <small><?php echo $row['address']?></small>
+                                </div>
+                            </td>
 
                             <td class="px-6 py-4 space-x-2 whitespace-nowrap text-right font-medium" style="font-size: 13px">
                                 <a href="#edit<?php echo $row['id'];?>" data-toggle="modal" class="text-indigo-600 hover:text-indigo-900 w-full transition-all">Edit</a>
@@ -128,6 +150,7 @@
                 </table>
             </div>
 
+            <!-- ADD MODAL -->
              <div id="addUser" class="show fade ">
                     <div class="flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center" id="user_modal">
                         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
@@ -155,6 +178,14 @@
                                             <p class="text-sm">Temperature <span class="text-red-500">*</span></p>
                                             <input type="text" value="" autocomplete="off" name="temp" class="bg-gray-100 focus:outline-none border-none focus:bg-gray-200 rounded py-2 px-2 text-gray-500 w-full">
                                         </div>
+                                        <div class="space-y-2">
+                                            <p class="text-sm">Contact Number <span class="text-red-500">*</span></p>
+                                            <input type="text" value="" autocomplete="off" name="num" class="bg-gray-100 focus:outline-none border-none focus:bg-gray-200 rounded py-2 px-2 text-gray-500 w-full">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <p class="text-sm">Address <span class="text-red-500">*</span></p>
+                                            <input type="text" value="" autocomplete="off" name="address" class="bg-gray-100 focus:outline-none border-none focus:bg-gray-200 rounded py-2 px-2 text-gray-500 w-full">
+                                        </div>
                                         <div class="flex justify-center">
                                             <div style="font-size: 14px">
                                                 <button type="button"  data-dismiss="modal" class="px-6 py-2 bg-gray-100 rounded text-gray-500">
@@ -172,7 +203,9 @@
                         </div>
                     </div>
                 </div>
+            <!-- end -->
 
+            <!-- edit modal -->
             <?php while ($row = mysqli_fetch_array($datas)) { ?>
                 <!-- modal -->
                 <div id="edit<?php echo $row['id']; ?>" class="show fade ">
@@ -202,6 +235,14 @@
                                             <p class="text-sm">Temperature <span class="text-red-500">*</span></p>
                                             <input type="text" value="<?php echo $row['temp']; ?>" autocomplete="off" name="temp" class="bg-gray-100 focus:outline-none border-none focus:bg-gray-200 rounded py-2 px-2 text-gray-500 w-full">
                                         </div>
+                                         <div class="space-y-2">
+                                            <p class="text-sm">Contact Number <span class="text-red-500">*</span></p>
+                                            <input type="text" value="<?php echo $row['num']; ?>" autocomplete="off" name="num" class="bg-gray-100 focus:outline-none border-none focus:bg-gray-200 rounded py-2 px-2 text-gray-500 w-full">
+                                        </div>
+                                         <div class="space-y-2">
+                                            <p class="text-sm">Address <span class="text-red-500">*</span></p>
+                                            <input type="text" value="<?php echo $row['address']; ?>" autocomplete="off" name="address" class="bg-gray-100 focus:outline-none border-none focus:bg-gray-200 rounded py-2 px-2 text-gray-500 w-full">
+                                        </div>
                                         <div class="flex justify-center">
                                             <div style="font-size: 14px">
                                                 <button type="button"  data-dismiss="modal" class="px-6 py-2 bg-gray-100 rounded text-gray-500">
@@ -220,25 +261,8 @@
                     </div>
                 </div>
             <?php } ?>
-
+        <!-- end -->
     <script src="js/jquery-1.12.4.js"></script>
     <script src="js/bootstrap.min.js"></script>
-     <script>
-        function triggerClick(e) {
-            document.querySelector("#profileImage").click();
-        }
-
-        function displayImage(e) {
-            if (e.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    document
-                        .querySelector("#profileDisplay")
-                        .setAttribute("src", e.target.result);
-                };
-                reader.readAsDataURL(e.files[0]);
-            }
-        }
-    </script>
 </body>
 </html>
